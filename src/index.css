@@ -1,0 +1,213 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MediFind Healthcare Platform Design System */
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 217 91% 95%;
+    --accent-foreground: 217 91% 40%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Custom healthcare colors */
+    --healthcare-blue: 217 91% 60%;
+    --healthcare-blue-dark: 217 91% 50%;
+    --healthcare-blue-light: 217 91% 95%;
+    --healthcare-green: 142 76% 36%;
+    --healthcare-green-light: 142 76% 95%;
+    --healthcare-orange: 25 95% 53%;
+    --healthcare-red: 0 84% 60%;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 16% 47%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 91% 95%;
+    --sidebar-accent-foreground: 217 91% 40%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 217 91% 70%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
+
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 215 20% 65%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 217 91% 70%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url("./assets/hero-doctor.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+}
+
+@layer components {
+  .provider-card {
+    background-color: hsl(var(--card));
+    border-radius: 0.75rem;
+    border: 1px solid hsl(var(--border));
+    padding: 1rem;
+    transition: box-shadow 200ms ease, border-color 200ms ease, transform 200ms ease;
+  }
+  .provider-card:hover {
+    box-shadow: 0 4px 24px -4px hsl(var(--primary) / 0.15);
+    border-color: hsl(var(--primary) / 0.3);
+  }
+
+  .category-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card));
+    transition: background-color 200ms ease, border-color 200ms ease;
+    cursor: pointer;
+  }
+  .category-pill:hover {
+    border-color: hsl(var(--primary));
+    background-color: hsl(var(--accent));
+  }
+
+  .category-pill.active {
+    border-color: hsl(var(--primary));
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  /* Filter chips */
+  .filter-chip {
+    @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200;
+  }
+
+  .filter-chip.active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .filter-chip:not(.active) {
+    @apply bg-secondary text-secondary-foreground hover:bg-accent;
+  }
+
+  /* Rating badge */
+  .rating-badge {
+    @apply inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-healthcare-green-light text-healthcare-green;
+  }
+
+  /* Status indicators */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-dot.online {
+    @apply bg-green-500;
+  }
+
+  .status-dot.offline {
+    @apply bg-gray-400;
+  }
+
+  .status-dot.busy {
+    @apply bg-orange-500;
+  }
+}
+
+@layer utilities {
+  /* Gradient backgrounds */
+  .gradient-healthcare {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(217 91% 50%) 100%);
+  }
+
+  .gradient-healthcare-light {
+    background: linear-gradient(135deg, hsl(var(--healthcare-blue-light)) 0%, hsl(210 40% 98%) 100%);
+  }
+
+  /* Shadows */
+  .shadow-healthcare {
+    box-shadow: 0 4px 24px -4px hsl(var(--primary) / 0.15);
+  }
+
+  .shadow-card {
+    box-shadow: 0 2px 8px -2px hsl(222 47% 11% / 0.08);
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-sm;
+  }
+}
