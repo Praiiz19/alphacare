@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 import { useToast } from "@/hooks/use-toast";
 import {
   User,
@@ -26,6 +27,11 @@ export default function Settings() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { profile, updateProfile, setAvatar } = useProfile();
+  const [fullName, setFullName] = useState(profile.name ?? "");
+  const [email, setEmail] = useState(profile.email ?? user?.email ?? "");
+  const [location, setLocation] = useState(profile.location ?? "");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [notifications, setNotifications] = useState({
     email: true,
@@ -83,22 +89,40 @@ export default function Settings() {
             <div className="flex items-center gap-6">
               <div className="relative">
                 <Avatar className="w-20 h-20">
-                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarImage src={profile.avatarDataUrl || "/placeholder.svg"} />
                   <AvatarFallback className="bg-primary text-primary-foreground text-xl">
-                    {user?.email?.charAt(0).toUpperCase() || "U"}
+                    {(fullName?.charAt(0) || user?.email?.charAt(0) || "U").toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <Button
                   size="icon"
                   variant="outline"
                   className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full"
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   <Camera className="w-4 h-4" />
                 </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      const result = typeof reader.result === "string" ? reader.result : "";
+                      setAvatar(result);
+                      toast({ title: "Profile photo updated" });
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-foreground">
-                  {user?.email || "Guest User"}
+                  {fullName || user?.email || "Guest User"}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   {user ? "Verified Account" : "Not logged in"}
@@ -111,7 +135,7 @@ export default function Settings() {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="fullName">Full Name</Label>
-                <Input id="fullName" placeholder="John Doe" />
+                <Input id="fullName" placeholder="John Doe" value={fullName} onChange={(e) => setFullName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
@@ -121,8 +145,8 @@ export default function Settings() {
                     id="email"
                     type="email"
                     className="pl-10"
-                    value={user?.email || ""}
-                    disabled
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -146,12 +170,21 @@ export default function Settings() {
                     id="location"
                     className="pl-10"
                     placeholder="San Francisco, CA"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                 </div>
               </div>
             </div>
 
-            <Button>Save Changes</Button>
+            <Button
+              onClick={() => {
+                updateProfile({ name: fullName, email, location });
+                toast({ title: "Profile saved", description: "Your changes have been stored." });
+              }}
+            >
+              Save Changes
+            </Button>
           </CardContent>
         </Card>
 
